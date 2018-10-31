@@ -7,3 +7,8 @@ node_modules/
 
 # Emacs
 *~
+
+# code coverage
+coverage/*
+.DS_Store
+package-lock.json
