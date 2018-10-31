@@ -8,7 +8,10 @@
     "sitemap.xml"
   ],
   "repository": "git://github.com/starzplayarabia/sitemap.js.git",
-  "author": "Starz Play Arabia <markel.arizaga@starzplayarabia.com> (http://www.arabia.starzplay.com)",
+  "author": [
+    "Starz Play Arabia <markel.arizaga@starzplayarabia.com> (http://www.arabia.starzplay.com)",
+    "Najam Khan <najamkhn@gmail.com>"
+  ],
   "dependencies": {
     "lodash": "^4.17.10",
     "url-join": "^4.0.0",
