@@ -4,6 +4,8 @@ sitemap.js
 **sitemap.js** is a high-level sitemap-generating framework that
 makes creating [sitemap XML](http://www.sitemaps.org/) files easy.
 
+[![Build Status](https://travis-ci.org/ekalinin/sitemap.js.svg?branch=master)](https://travis-ci.org/ekalinin/sitemap.js)
+
 Table of Contents
 =================
 
@@ -15,11 +17,13 @@ Table of Contents
       * [Example of synchronous sitemap.js usage:](#example-of-synchronous-sitemapjs-usage)
       * [Example of dynamic page manipulations into sitemap:](#example-of-dynamic-page-manipulations-into-sitemap)
       * [Example of pre-generating sitemap based on existing static files:](#example-of-pre-generating-sitemap-based-on-existing-static-files)
+      * [Example of images with captions:](#example-of-images-with-captions)
       * [Example of indicating alternate language pages:](#example-of-indicating-alternate-language-pages)
       * [Example of indicating Android app deep linking:](#example-of-indicating-android-app-deep-linking)
       * [Example of Sitemap Styling](#example-of-sitemap-styling)
       * [Example of mobile URL](#example-of-mobile-url)
       * [Example of using HH:MM:SS in lastmod](#example-of-using-hhmmss-in-lastmod)
+      * [Example of Sitemap Index as String](#example-of-sitemap-index-as-string)
       * [Example of Sitemap Index](#example-of-sitemap-index)
     * [Testing](#testing)
     * [License](#license)
@@ -42,12 +46,12 @@ var sm = require('sitemap')
 // Creates a sitemap object given the input configuration with URLs
 var sitemap = sm.createSitemap({ options });
 // Generates XML with a callback function
-sitemap.toXML( function(xml){ console.log(xml) });
+sitemap.toXML( function(err, xml){ if (!err){ console.log(xml) } });
 // Gives you a string containing the XML data
 var xml = sitemap.toString();
 ```
 
-###Example of using sitemap.js with [express](https://github.com/visionmedia/express):
+### Example of using sitemap.js with [express](https://github.com/visionmedia/express):
 
 ```javascript
 var express = require('express')
@@ -78,7 +82,7 @@ app.get('/sitemap.xml', function(req, res) {
 app.listen(3000);
 ```
 
-###Example of synchronous sitemap.js usage:
+### Example of synchronous sitemap.js usage:
 
 ```javascript
 var express = require('express')
@@ -103,7 +107,7 @@ app.get('/sitemap.xml', function(req, res) {
 app.listen(3000);
 ```
 
-###Example of dynamic page manipulations into sitemap:
+### Example of dynamic page manipulations into sitemap:
 
 ```javascript
 var sitemap = sm.createSitemap ({
@@ -118,7 +122,7 @@ sitemap.del('/page-1/');
 
 
 
-###Example of pre-generating sitemap based on existing static files:
+### Example of pre-generating sitemap based on existing static files:
 
 ```javascript
 var sm = require('sitemap')
@@ -137,13 +141,62 @@ var sitemap = sm.createSitemap({
 fs.writeFileSync("app/assets/sitemap.xml", sitemap.toString());
 ```
 
-###Example of indicating alternate language pages:
+### Example of images with captions:
+
+```javascript
+var sitemap = sm.createSitemap({
+      urls: [{
+        url: 'http://test.com/page-1/',
+        img: [
+          {
+            url: 'http://test.com/img1.jpg',
+            caption: 'An image',
+            title: 'The Title of Image One',
+            geoLocation: 'London, United Kingdom',
+            license: 'https://creativecommons.org/licenses/by/4.0/'
+          },
+          {
+            url: 'http://test.com/img2.jpg',
+            caption: 'Another image',
+            title: 'The Title of Image Two',
+            geoLocation: 'London, United Kingdom',
+            license: 'https://creativecommons.org/licenses/by/4.0/'
+          }
+        ]
+      }]
+    });
+```
+
+### Example of videos:
+
+[Description](https://developers.google.com/webmasters/videosearch/sitemaps) specifications. Required fields are thumbnail_loc, title, and description.
+
+```javascript
+var sitemap = sm.createSitemap({
+      urls: [{
+        url: 'http://test.com/page-1/',
+        video: [
+          { thumbnail_loc: 'http://test.com/tmbn1.jpg', title: 'A video title', description: 'This is a video' },
+          {
+            thumbnail_loc: 'http://test.com/tmbn2.jpg',
+            title: 'A video with an attribute',
+            description: 'This is another video',
+            'player_loc': 'http://www.example.com/videoplayer.mp4?video=123',
+            'player_loc:autoplay': 'ap=1'
+          }
+        ]
+      }]
+    });
+```
+
+
+### Example of indicating alternate language pages:
 
 [Description](https://support.google.com/webmasters/answer/2620865?hl=en) in
 the google's Search Console Help.
 
 ```javascript
-var sm = sm.createSitemap({
+var sitemap = sm.createSitemap({
       urls: [{
         url: 'http://test.com/page-1/',
         changefreq: 'weekly',
@@ -157,13 +210,13 @@ var sm = sm.createSitemap({
 ```
 
 
-###Example of indicating Android app deep linking:
+### Example of indicating Android app deep linking:
 
 [Description](https://developer.android.com/training/app-indexing/enabling-app-indexing.html#sitemap) in
 the google's Search Console Help.
 
 ```javascript
-var sm = sm.createSitemap({
+var sitemap = sm.createSitemap({
       urls: [{
         url: 'http://test.com/page-1/',
         changefreq: 'weekly',
@@ -173,10 +226,10 @@ var sm = sm.createSitemap({
     });
 ```
 
-###Example of Sitemap Styling
+### Example of Sitemap Styling
 
 ```javascript
-var sm = sm.createSitemap({
+var sitemap = sm.createSitemap({
       urls: [{
         url: 'http://test.com/page-1/',
         changefreq: 'weekly',
@@ -194,8 +247,9 @@ var sm = sm.createSitemap({
 
 [Description](https://support.google.com/webmasters/answer/34648?hl=en) in
 the google's Search Console Help.
+
 ```javascript
-var sm = sm.createSitemap({
+var sitemap = sm.createSitemap({
       urls: [{
         url: 'http://mobile.test.com/page-1/',
         changefreq: 'weekly',
@@ -221,11 +275,21 @@ var sm = require('sitemap')
     });
 ```
 
+### Example of Sitemap Index as String
+
+```javascript
+var sm = require('sitemap')
+  , smi = sm.buildSitemapIndex({
+      urls: ['https://example.com/sitemap1.xml', 'https://example.com/sitemap2.xml'],
+      xslUrl: 'https://example.com/style.xsl' // optional
+    });
+```
+
 ### Example of Sitemap Index
 
 ```javascript
 var sm = require('sitemap')
-  , smi = new sm.createSitemapIndex({
+  , smi = sm.createSitemapIndex({
       cacheTime: 600000,
       hostname: 'http://www.sitemap.org',
       sitemapName: 'sm-test',
@@ -235,7 +299,6 @@ var sm = require('sitemap')
       // optional:
       // callback: function(err, result) {}
     });
-
 ```
 
 Testing
